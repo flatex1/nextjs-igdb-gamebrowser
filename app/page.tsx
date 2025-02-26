@@ -54,11 +54,11 @@ export default async function Home({ searchParams }: HomePageProps) {
       {error ? (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
+          <AlertTitle>Ошибка</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : (
-        <>
+        <>          
           <Suspense fallback={<GameGridSkeleton />}>
             <GameGrid games={games} title={title} />
           </Suspense>

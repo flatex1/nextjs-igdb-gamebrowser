@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Gamepad2 } from "lucide-react";
 import { SearchBar } from "@/components/search-bar";
+import { Suspense } from "react";
 
 export function SiteHeader() {
   return (
@@ -10,7 +11,9 @@ export function SiteHeader() {
           <Gamepad2 className="h-6 w-6" />
           <span className="font-bold text-xl">GameDiscover</span>
         </Link>
-        <SearchBar />
+        <Suspense>
+          <SearchBar />
+        </Suspense>
       </div>
     </header>
   );

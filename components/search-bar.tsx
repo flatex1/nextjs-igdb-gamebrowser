@@ -6,7 +6,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Game, getGameSuggestions } from "@/lib/igdb";
-import { 
+import {
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -21,13 +21,13 @@ export function SearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("query") || "";
-  
+
   const [input, setInput] = useState(initialQuery);
   const [open, setOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<Game[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const debouncedInput = useDebounce(input, 300);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -37,7 +37,7 @@ export function SearchBar() {
         setSuggestions([]);
         return;
       }
-      
+
       setLoading(true);
       setError(null);
       try {
@@ -51,7 +51,7 @@ export function SearchBar() {
         setLoading(false);
       }
     };
-    
+
     if (debouncedInput.length >= 2) {
       fetchSuggestions();
     }
@@ -102,10 +102,11 @@ export function SearchBar() {
 
   return (
     <>
-      <form 
+      <form
         onSubmit={handleSubmit}
         className="relative flex w-full max-w-lg items-center space-x-2"
       >
+        
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -122,7 +123,7 @@ export function SearchBar() {
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <DialogTitle className="sr-only">Поиск игр</DialogTitle>
-        <CommandInput 
+        <CommandInput
           value={input}
           onValueChange={setInput}
           placeholder="Найти по названию..."
@@ -134,9 +135,9 @@ export function SearchBar() {
           {error && (
             <div className="py-6 text-center text-sm">
               <p className="text-destructive mb-2">{error}</p>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={handleRetry}
                 className="mt-2"
               >

@@ -10,19 +10,19 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
-    if (!process.env.API_URL || !process.env.CLIENT_ID || !process.env.ACCESS_TOKEN) {
+    
+    if (!process.env.IGDB_CLIENT_ID || !process.env.IGDB_ACCESS_TOKEN || !process.env.IGDB_PUBLIC_API_URL) {
       return NextResponse.json(
-        { error: 'Missing API URL, Client ID, or Access Token' },
+        { error: 'Missing envirenment variables' },
         { status: 500 }
       );
     }
 
-    const response = await fetch(`${process.env.API_URL}/${endpoint}`, {
+    const response = await fetch(`${process.env.IGDB_PUBLIC_API_URL}/${endpoint}`, {
       method: 'POST',
       headers: {
-        'Client-ID': process.env.CLIENT_ID,
-        'Authorization': `Bearer ${process.env.ACCESS_TOKEN}`,
+        'Client-ID': process.env.IGDB_CLIENT_ID,
+        'Authorization': `Bearer ${process.env.IGDB_ACCESS_TOKEN}`,
         'Content-Type': 'text/plain',
       },
       body: query,

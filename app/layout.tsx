@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { SiteHeader } from '@/components/site-header';
+import { Header } from '@/components/header';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -15,18 +15,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <body className={inter.className}>
         <div className="relative flex min-h-screen flex-col">
-          <SiteHeader />
+          <Header />
           <main className="flex-1">
-            <div className="container mx-auto py-6 md:py-10">
+            <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 md:py-10">
               {children}
             </div>
           </main>
-          <footer className="border-t py-6 md:py-0">
-            <div className="container mx-auto flex h-16 items-center">
-              <p className="text-sm text-muted-foreground">
+          <footer className="border-t py-4 sm:py-6 md:py-0">
+            <div className="container mx-auto flex h-12 sm:h-16 items-center px-4 sm:px-6">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 © {new Date().getFullYear()} GameDiscover. Работает на основе IGDB API. </p>
             </div>
           </footer>

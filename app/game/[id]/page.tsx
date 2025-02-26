@@ -1,37 +1,38 @@
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, AlertCircle } from "lucide-react";
-import { formatRating, formatReleaseDate, getCoverImageUrl, getGameById } from "@/lib/igdb";
+import { AlertCircle, ChevronLeft } from "lucide-react";
+import { getGameById, formatRating, formatReleaseDate, getCoverImageUrl } from "@/lib/igdb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Link from "next/link";
+import Image from "next/image";
 
-interface GamePageProps {
-  params: {
-    id: string;
-  };
-}
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
-export default async function GamePage({ params }: GamePageProps) {
-  const id = parseInt(params.id);
+export default async function GamePage({ params }: Props) {
+  const { id } = await params;
+
+  const gameId = parseInt(id);
   
-  if (isNaN(id)) {
+  if (isNaN(gameId)) {
     return notFound();
   }
-  
+
   try {
-    const game = await getGameById(id);
-    
+    const game = await getGameById(gameId);
+
     if (!game) {
       return notFound();
     }
-    
-    const coverUrl = getCoverImageUrl(game.cover?.url, 'large');
-    
+
+    const coverUrl = getCoverImageUrl(game.cover?.url, "large");
+
     return (
       <div className="space-y-8 animate-in fade-in duration-500">
         <div>
@@ -42,7 +43,7 @@ export default async function GamePage({ params }: GamePageProps) {
             </Link>
           </Button>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-1">
             <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg shadow-md">
@@ -56,18 +57,18 @@ export default async function GamePage({ params }: GamePageProps) {
               />
             </div>
           </div>
-          
+
           <div className="md:col-span-2 space-y-6">
             <div className="space-y-2">
               <h1 className="text-3xl font-bold tracking-tight">{game.name}</h1>
-              
+
               <div className="flex flex-wrap gap-2">
                 {game.rating && (
                   <Badge variant="secondary" className="text-sm">
                     ★ {formatRating(game.rating)}
                   </Badge>
                 )}
-                
+
                 {game.first_release_date && (
                   <Badge variant="outline" className="text-sm">
                     Дата релиза: {formatReleaseDate(game.first_release_date)}
@@ -75,9 +76,9 @@ export default async function GamePage({ params }: GamePageProps) {
                 )}
               </div>
             </div>
-            
+
             <Separator />
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Информация по игре</CardTitle>
@@ -97,7 +98,7 @@ export default async function GamePage({ params }: GamePageProps) {
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">Рейтинг</TableCell>
-                      <TableCell>{game.rating ? `${formatRating(game.rating)}/10` : 'Без рейтинга'}</TableCell>
+                      <TableCell>{game.rating ? `${formatRating(game.rating)}/10` : "Без рейтинга"}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">Дата релиза</TableCell>
@@ -106,16 +107,16 @@ export default async function GamePage({ params }: GamePageProps) {
                     <TableRow>
                       <TableCell className="font-medium">Платформа</TableCell>
                       <TableCell>
-                        {game.platforms && game.platforms.length > 0 
-                          ? game.platforms.map(p => p.name).join(', ')
-                          : 'Неизвестно'}
+                        {game.platforms && game.platforms.length > 0
+                          ? game.platforms.map((p) => p.name).join(", ")
+                          : "Неизвестно"}
                       </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </CardContent>
             </Card>
-            
+
             {game.summary && (
               <Card>
                 <CardHeader>
@@ -140,15 +141,15 @@ export default async function GamePage({ params }: GamePageProps) {
             Назад к играм
           </Link>
         </Button>
-        
+
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
+          <AlertTitle>Ошибка</AlertTitle>
           <AlertDescription>
             Произошла ошибка при загрузке данных игры. Пожалуйста, попробуйте позже.
           </AlertDescription>
         </Alert>
-        
+
         <div className="flex justify-center">
           <Button asChild>
             <Link href="/">На главную страницу</Link>

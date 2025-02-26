@@ -33,14 +33,14 @@ export function PaginationControls({
       >
         <Link
           href={createPageURL(currentPage - 1)}
-          aria-label="Previous page"
+          aria-label="Предыдущая страница"
         >
           <ChevronLeft className="h-4 w-4" />
         </Link>
       </Button>
       
       <span className="text-sm">
-        Page {currentPage} of {totalPages || 1}
+        Страница {currentPage} из {totalPages || 1}
       </span>
       
       <Button
@@ -51,7 +51,7 @@ export function PaginationControls({
       >
         <Link
           href={createPageURL(currentPage + 1)}
-          aria-label="Next page"
+          aria-label="Следующая страница"
         >
           <ChevronRight className="h-4 w-4" />
         </Link>

@@ -9,21 +9,22 @@ import { AlertCircle } from "lucide-react";
 const ITEMS_PER_PAGE = 10;
 
 interface HomePageProps {
-  searchParams: {
+  searchParams: Promise<{
     query?: string;
     page?: string;
-  };
+  }>;
 }
 
 export default async function Home({ searchParams }: HomePageProps) {
-  const query = searchParams.query || "";
-  const currentPage = Number(searchParams.page) || 1;
-  
+  const resolvedSearchParams = await searchParams;
+  const query = resolvedSearchParams.query || "";
+  const currentPage = Number(resolvedSearchParams.page) || 1;
+
   let games: any[] = [];
   let totalGames = 0;
   let totalPages = 1;
   let error: string | null = null;
-  
+
   try {
     if (query) {
       // Режим поиска
@@ -32,7 +33,7 @@ export default async function Home({ searchParams }: HomePageProps) {
         page: currentPage,
         limit: ITEMS_PER_PAGE,
       });
-      
+
       totalGames = await getGamesCount(query);
       totalPages = Math.ceil(totalGames / ITEMS_PER_PAGE);
     } else {
@@ -43,8 +44,8 @@ export default async function Home({ searchParams }: HomePageProps) {
     console.error("Error loading games:", err);
     error = "Ошибка при загрузке игр. Попробуйте позже.";
   }
-  
-  const title = query 
+
+  const title = query
     ? `Результаты поиска по запросу "${query}"`
     : "Лучшие игры по рейтингу на 2025 год";
 
@@ -57,22 +58,24 @@ export default async function Home({ searchParams }: HomePageProps) {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : (
-        <>
+        <>          
           <Suspense fallback={<GameGridSkeleton />}>
             <GameGrid games={games} title={title} />
           </Suspense>
-          
+
           {query && (
             <div className="text-center text-sm text-muted-foreground">
               Найдено {totalGames} игр(ы) по вашему запросу.
             </div>
           )}
-          
+
           {totalPages > 1 && (
-            <PaginationControls
-              totalPages={totalPages}
-              currentPage={currentPage}
-            />
+            <Suspense>
+              <PaginationControls
+                totalPages={totalPages}
+                currentPage={currentPage}
+              />
+            </Suspense>
           )}
         </>
       )}

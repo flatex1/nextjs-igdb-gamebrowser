@@ -24,9 +24,7 @@ export interface SearchParams {
 
 async function fetchFromIGDB(endpoint: string, query: string) {
   try {
-    console.log(`Отправка запроса к ${endpoint} с query:`, query);
-    
-    const response = await fetch(process.env.URL + '/api/igdb', {
+    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/igdb', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,18 +32,15 @@ async function fetchFromIGDB(endpoint: string, query: string) {
       body: JSON.stringify({ endpoint, query }),
     });
 
-    console.log('Статус ответа:', response.status);
-
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Ошибка API (${response.status}):`, errorText);
-      throw new Error(`Ошибка API: ${response.status} - ${errorText}`);
+      const errorData = await response.json();
+      console.error(`API error (${response.status}):`, errorData);
+      throw new Error(`API error: ${response.status}`);
     }
 
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error('Ошибка при запросе к IGDB:', error);
+    console.error('Error fetching from IGDB:', error);
     throw error;
   }
 }
@@ -85,7 +80,6 @@ export const searchGames = cache(async ({ query, page = 1, limit = 10 }: SearchP
     return [];
   }
 });
-
 export const getGameById = cache(async (id: number): Promise<Game | null> => {
   try {
     const query = `
